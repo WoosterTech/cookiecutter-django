@@ -7,7 +7,7 @@ SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = ./_build
-{%- if cookiecutter.use_docker == 'y' %}
+{%- if cookiecutter.use_docker %}
 APP = /app
 {%- else %}
 APP = ../{{cookiecutter.project_slug}}
@@ -22,7 +22,7 @@ help:
 # Build, watch and serve docs with live reload
 livehtml:
 	sphinx-autobuild -b html
-	{%- if cookiecutter.use_docker == 'y' %} --host 0.0.0.0
+	{%- if cookiecutter.use_docker %} --host 0.0.0.0
 	{%- else %} --open-browser
 	{%- endif %} --port 9000 --watch $(APP) -c . $(SOURCEDIR) $(BUILDDIR)/html
 

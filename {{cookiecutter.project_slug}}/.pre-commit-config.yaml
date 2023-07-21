@@ -7,7 +7,6 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
-      - id: check-json
       - id: check-toml
       - id: check-xml
       - id: check-yaml
@@ -16,6 +15,11 @@ repos:
       - id: check-case-conflict
       - id: check-docstring-first
       - id: detect-private-key
+
+  - repo: https://gitlab.com/bmares/check-json5
+    rev: v1.0.0
+    hooks:
+      - id: check-json5
 {%- if cookiecutter.frontend_pipeline in ["Webpack", "Gulp"] %}
 
   - repo: https://github.com/pre-commit/mirrors-prettier
@@ -37,6 +41,14 @@ repos:
     hooks:
       - id: pyupgrade
         args: [--py311-plus]
+{% if cookiecutter.linter == "ruff" %}
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.278
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+{% endif %}
 
   - repo: https://github.com/psf/black
     rev: 23.3.0
@@ -47,11 +59,13 @@ repos:
     rev: 5.12.0
     hooks:
       - id: isort
+{% if cookiecutter.linter == "flake8" %}
 
   - repo: https://github.com/PyCQA/flake8
     rev: 6.0.0
     hooks:
       - id: flake8
+{% endif %}
 
   - repo: https://github.com/Riverside-Healthcare/djLint
     rev: v1.31.1

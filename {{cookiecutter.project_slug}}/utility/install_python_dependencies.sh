@@ -34,7 +34,7 @@ if [ -z "$VIRTUAL_ENV" ]; then
     exit 1;
 else
     pip install -r $PROJECT_DIR/requirements/local.txt
-    {%- if cookiecutter.use_heroku == "y" -%}
+    {%- if cookiecutter.use_heroku -%}
     pip install -r $PROJECT_DIR/requirements.txt
     {%- endif %}
 fi

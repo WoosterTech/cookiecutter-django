@@ -1,9 +1,9 @@
-{% if cookiecutter.use_sentry == 'y' -%}
+{% if cookiecutter.use_sentry -%}
 import logging
 
 import sentry_sdk
 
-{%- if cookiecutter.use_celery == 'y' %}
+{%- if cookiecutter.use_celery %}
 from sentry_sdk.integrations.celery import CeleryIntegration
 
 {%- endif %}
@@ -102,11 +102,11 @@ AZURE_ACCOUNT_NAME = env("DJANGO_AZURE_ACCOUNT_NAME")
 AZURE_CONTAINER = env("DJANGO_AZURE_CONTAINER_NAME")
 {% endif -%}
 
-{% if cookiecutter.cloud_provider != 'None' or cookiecutter.use_whitenoise == 'y' -%}
+{% if cookiecutter.cloud_provider != 'None' or cookiecutter.use_whitenoise -%}
 # STATIC
 # ------------------------
 {% endif -%}
-{% if cookiecutter.use_whitenoise == 'y' -%}
+{% if cookiecutter.use_whitenoise -%}
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 {% elif cookiecutter.cloud_provider == 'AWS' -%}
 STATICFILES_STORAGE = "{{cookiecutter.project_slug}}.utils.storages.StaticRootS3Boto3Storage"
@@ -228,13 +228,13 @@ COMPRESS_ENABLED = env.bool("COMPRESS_ENABLED", default=True)
 {%- if cookiecutter.cloud_provider == 'None' %}
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_STORAGE
 COMPRESS_STORAGE = "compressor.storage.GzipCompressorFileStorage"
-{%- elif cookiecutter.cloud_provider in ('AWS', 'GCP', 'Azure') and cookiecutter.use_whitenoise == 'n' %}
+{%- elif cookiecutter.cloud_provider in ('AWS', 'GCP', 'Azure') and not cookiecutter.use_whitenoise %}
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_STORAGE
 COMPRESS_STORAGE = STATICFILES_STORAGE
 {%- endif %}
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_URL
-COMPRESS_URL = STATIC_URL{% if cookiecutter.use_whitenoise == 'y' or cookiecutter.cloud_provider == 'None' %}  # noqa: F405{% endif %}
-{%- if cookiecutter.use_whitenoise == 'y' %}
+COMPRESS_URL = STATIC_URL{% if cookiecutter.use_whitenoise or cookiecutter.cloud_provider == 'None' %}  # noqa: F405{% endif %}
+{%- if cookiecutter.use_whitenoise %}
 # https://django-compressor.readthedocs.io/en/latest/settings/#django.conf.settings.COMPRESS_OFFLINE
 COMPRESS_OFFLINE = True  # Offline compression is required when using Whitenoise
 {%- endif %}
@@ -247,7 +247,7 @@ COMPRESS_FILTERS = {
     "js": ["compressor.filters.jsmin.JSMinFilter"],
 }
 {% endif %}
-{%- if cookiecutter.use_whitenoise == 'n' -%}
+{%- if not cookiecutter.use_whitenoise -%}
 # Collectfast
 # ------------------------------------------------------------------------------
 # https://github.com/antonagestam/collectfast#installation
@@ -258,7 +258,7 @@ INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa: F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging
 # See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-{% if cookiecutter.use_sentry == 'n' -%}
+{% if not cookiecutter.use_sentry -%}
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
@@ -340,7 +340,7 @@ sentry_logging = LoggingIntegration(
     event_level=logging.ERROR,  # Send errors as events
 )
 
-{%- if cookiecutter.use_celery == 'y' %}
+{%- if cookiecutter.use_celery %}
 integrations = [
     sentry_logging,
     DjangoIntegration(),
@@ -358,7 +358,7 @@ sentry_sdk.init(
     traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
 )
 {% endif %}
-{% if cookiecutter.use_drf == "y" -%}
+{% if cookiecutter.use_drf -%}
 
 # django-rest-framework
 # -------------------------------------------------------------------------------

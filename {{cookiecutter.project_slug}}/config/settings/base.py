@@ -44,13 +44,13 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-{% if cookiecutter.use_docker == "y" -%}
+{% if cookiecutter.use_docker -%}
 DATABASES = {"default": env.db("DATABASE_URL")}
 {%- else %}
 DATABASES = {
     "default": env.db(
         "DATABASE_URL",
-        default="postgres://{% if cookiecutter.windows == 'y' %}localhost{% endif %}/{{cookiecutter.project_slug}}",
+        default="postgres://{% if cookiecutter.windows %}localhost{% endif %}/{{cookiecutter.project_slug}}",
     ),
 }
 {%- endif %}
@@ -84,10 +84,10 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-{%- if cookiecutter.use_celery == 'y' %}
+{%- if cookiecutter.use_celery %}
     "django_celery_beat",
 {%- endif %}
-{%- if cookiecutter.use_drf == "y" %}
+{%- if cookiecutter.use_drf %}
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
@@ -147,10 +147,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-{%- if cookiecutter.use_drf == 'y' %}
+{%- if cookiecutter.use_drf %}
     "corsheaders.middleware.CorsMiddleware",
 {%- endif %}
-{%- if cookiecutter.use_whitenoise == 'y' %}
+{%- if cookiecutter.use_whitenoise %}
     "whitenoise.middleware.WhiteNoiseMiddleware",
 {%- endif %}
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -277,7 +277,7 @@ LOGGING = {
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
-{% if cookiecutter.use_celery == 'y' -%}
+{% if cookiecutter.use_celery -%}
 # Celery
 # ------------------------------------------------------------------------------
 if USE_TZ:
@@ -344,7 +344,7 @@ SOCIALACCOUNT_FORMS = {"signup": "{{cookiecutter.project_slug}}.users.forms.User
 INSTALLED_APPS += ["compressor"]
 STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 {%- endif %}
-{% if cookiecutter.use_drf == "y" -%}
+{% if cookiecutter.use_drf -%}
 # django-rest-framework
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/

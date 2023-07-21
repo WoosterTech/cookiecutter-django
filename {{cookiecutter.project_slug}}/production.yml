@@ -9,11 +9,11 @@ volumes:
   {%- endif %}
 
 services:
-  django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
+  django:{% if cookiecutter.use_celery %} &django{% endif %}
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-      {%- if cookiecutter.frontend_pipeline == 'Webpack' and cookiecutter.use_whitenoise == 'n' %}
+      {%- if cookiecutter.frontend_pipeline == 'Webpack' and not cookiecutter.use_whitenoise %}
       args:
         # These variable can be defined in an .env file in the root of the repo
         {%- if cookiecutter.cloud_provider == 'AWS' %}
@@ -62,13 +62,13 @@ services:
     ports:
       - '0.0.0.0:80:80'
       - '0.0.0.0:443:443'
-      {%- if cookiecutter.use_celery == 'y' %}
+      {%- if cookiecutter.use_celery %}
       - '0.0.0.0:5555:5555'
       {%- endif %}
 
   redis:
     image: redis:6
-  {%- if cookiecutter.use_celery == 'y' %}
+  {%- if cookiecutter.use_celery %}
 
   celeryworker:
     <<: *django

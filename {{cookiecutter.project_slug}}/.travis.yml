@@ -5,7 +5,7 @@ python:
   - "3.11"
 
 services:
-  - {% if cookiecutter.use_docker == 'y' %}docker{% else %}postgresql{% endif %}
+  - {% if cookiecutter.use_docker %}docker{% else %}postgresql{% endif %}
 jobs:
   include:
     - name: "Linter"
@@ -15,7 +15,7 @@ jobs:
         - "flake8"
 
     - name: "Django Test"
-    {%- if cookiecutter.use_docker == 'y' %}
+    {%- if cookiecutter.use_docker %}
       before_script:
         - docker-compose -v
         - docker -v

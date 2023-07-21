@@ -15,6 +15,14 @@ norecursedirs = ["node_modules"]
 include = ["{{cookiecutter.project_slug}}/**"]
 omit = ["*/migrations/*", "*/tests/*"]
 plugins = ["django_coverage_plugin"]
+{%- if cookiecutter.linter == "ruff" %}
+
+[tool.ruff]
+line-length = 119
+select = ["E", "F", "B"]
+unfixable = ["B"]
+target-version = "py311"
+{%- endif %}
 
 
 # ==== black ====
@@ -45,7 +53,7 @@ warn_redundant_casts = true
 warn_unused_configs = true
 plugins = [
     "mypy_django_plugin.main",
-{%- if cookiecutter.use_drf == "y" %}
+{%- if cookiecutter.use_drf %}
     "mypy_drf_plugin.main",
 {%- endif %}
 ]
@@ -63,7 +71,7 @@ django_settings_module = "config.settings.test"
 [tool.pylint.MASTER]
 load-plugins = [
     "pylint_django",
-{%- if cookiecutter.use_celery == "y" %}
+{%- if cookiecutter.use_celery %}
     "pylint_celery",
 {%- endif %}
 ]

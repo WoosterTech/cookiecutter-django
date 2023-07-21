@@ -5,7 +5,7 @@ volumes:
   {{ cookiecutter.project_slug }}_local_postgres_data_backups: {}
 
 services:
-  django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
+  django:{% if cookiecutter.use_celery %} &django{% endif %}
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
@@ -13,10 +13,10 @@ services:
     container_name: {{ cookiecutter.project_slug }}_local_django
     depends_on:
       - postgres
-      {%- if cookiecutter.use_celery == 'y' %}
+      {%- if cookiecutter.use_celery %}
       - redis
       {%- endif %}
-      {%- if cookiecutter.use_mailhog == 'y' %}
+      {%- if cookiecutter.use_mailhog %}
       - mailhog
       {%- endif %}
     volumes:
@@ -55,7 +55,7 @@ services:
     ports:
       - '9000:9000'
     command: /start-docs
-  {%- if cookiecutter.use_mailhog == 'y' %}
+  {%- if cookiecutter.use_mailhog %}
 
   mailhog:
     image: mailhog/mailhog:v1.0.0
@@ -64,7 +64,7 @@ services:
       - "8025:8025"
 
   {%- endif %}
-  {%- if cookiecutter.use_celery == 'y' %}
+  {%- if cookiecutter.use_celery %}
 
   redis:
     image: redis:6
@@ -77,7 +77,7 @@ services:
     depends_on:
       - redis
       - postgres
-      {%- if cookiecutter.use_mailhog == 'y' %}
+      {%- if cookiecutter.use_mailhog %}
       - mailhog
       {%- endif %}
     ports: []
@@ -90,7 +90,7 @@ services:
     depends_on:
       - redis
       - postgres
-      {%- if cookiecutter.use_mailhog == 'y' %}
+      {%- if cookiecutter.use_mailhog %}
       - mailhog
       {%- endif %}
     ports: []

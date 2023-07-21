@@ -48,7 +48,7 @@ To run the tests, check your test coverage, and generate an HTML coverage report
 
 Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html#sass-compilation-live-reloading).
 
-{%- if cookiecutter.use_celery == "y" %}
+{%- if cookiecutter.use_celery %}
 
 ### Celery
 
@@ -78,11 +78,11 @@ celery -A config.celery_app worker -B -l info
 ```
 
 {%- endif %}
-{%- if cookiecutter.use_mailhog == "y" %}
+{%- if cookiecutter.use_mailhog %}
 
 ### Email Server
 
-{%- if cookiecutter.use_docker == "y" %}
+{%- if cookiecutter.use_docker %}
 
 In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server [MailHog](https://github.com/mailhog/MailHog) with a web interface is available as docker container.
 
@@ -115,7 +115,7 @@ Now you have your own mail server running locally, ready to receive whatever you
 {%- endif %}
 
 {%- endif %}
-{%- if cookiecutter.use_sentry == "y" %}
+{%- if cookiecutter.use_sentry %}
 
 ### Sentry
 
@@ -128,14 +128,14 @@ You must set the DSN url in production.
 ## Deployment
 
 The following details how to deploy this application.
-{%- if cookiecutter.use_heroku.lower() == "y" %}
+{%- if cookiecutter.use_heroku.lower() %}
 
 ### Heroku
 
 See detailed [cookiecutter-django Heroku documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html).
 
 {%- endif %}
-{%- if cookiecutter.use_docker.lower() == "y" %}
+{%- if cookiecutter.use_docker.lower() %}
 
 ### Docker
 

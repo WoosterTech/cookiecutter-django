@@ -7,7 +7,7 @@ WORKDIR ${APP_HOME}
 COPY ./package.json ${APP_HOME}
 RUN npm install && npm cache clean --force
 COPY . ${APP_HOME}
-{%- if cookiecutter.frontend_pipeline == 'Webpack' and cookiecutter.use_whitenoise == 'n' %}
+{%- if cookiecutter.frontend_pipeline == 'Webpack' and not cookiecutter.use_whitenoise %}
 {%- if cookiecutter.cloud_provider == 'AWS' %}
 ARG DJANGO_AWS_STORAGE_BUCKET_NAME
 ENV DJANGO_AWS_STORAGE_BUCKET_NAME=${DJANGO_AWS_STORAGE_BUCKET_NAME}
@@ -92,7 +92,7 @@ RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
 
-{%- if cookiecutter.use_celery == "y" %}
+{%- if cookiecutter.use_celery %}
 COPY --chown=django:django ./compose/production/django/celery/worker/start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
 RUN chmod +x /start-celeryworker
@@ -122,7 +122,7 @@ RUN chown django:django ${APP_HOME}
 USER django
 
 RUN DATABASE_URL="" \
-  {%- if cookiecutter.use_celery == "y" %}
+  {%- if cookiecutter.use_celery %}
   CELERY_BROKER_URL="" \
   {%- endif %}
   DJANGO_SETTINGS_MODULE="config.settings.test" \

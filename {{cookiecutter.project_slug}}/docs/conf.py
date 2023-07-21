@@ -19,13 +19,13 @@ if os.getenv("READTHEDOCS", default=False) == "True":
     os.environ["DJANGO_READ_DOT_ENV_FILE"] = "True"
     os.environ["USE_DOCKER"] = "no"
 else:
-{%- if cookiecutter.use_docker == 'y' %}
+{%- if cookiecutter.use_docker %}
     sys.path.insert(0, os.path.abspath("/app"))
 {%- else %}
     sys.path.insert(0, os.path.abspath(".."))
 {%- endif %}
 os.environ["DATABASE_URL"] = "sqlite:///readthedocs.db"
-{%- if cookiecutter.use_celery == 'y' %}
+{%- if cookiecutter.use_celery %}
 os.environ["CELERY_BROKER_URL"] = os.getenv("REDIS_URL", "redis://redis:6379")
 {%- endif %}
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")

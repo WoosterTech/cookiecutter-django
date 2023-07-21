@@ -6,7 +6,7 @@
         <option name="services">
           <list>
             <option value="django"/>
-            {%- if cookiecutter.use_celery == 'y' %}
+            {%- if cookiecutter.use_celery %}
             <option value="celeryworker"/>
             <option value="celerybeat"/>
             {%- endif %}
