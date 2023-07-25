@@ -35,12 +35,21 @@
   "use_drf": false,
   "frontend_pipeline": ["None", "Django Compressor", "Gulp", "Webpack"],
   "use_celery": false,
-  "use_mailhog": false,
+  "email_testing": ["mailhog", "mailpit", "none"],
   "use_sentry": false,
   "use_whitenoise": false,
   "use_heroku": false,
   "linter": ["flake8", "ruff"],
   "ci_tool": ["None", "Travis", "Gitlab", "Github"],
   "keep_local_envs_in_vcs": true,
-  "debug": false
+  "debug": false,
+  "__prompts__": {
+    "email_testing": "Email Testing Tool:",
+    "linter": "Which linting tool do you prefer?:",
+    "project_name": "Project Name:",
+    "project_slug": "Project Slug:",
+    "author_name": "Author Name:",
+    "open_source_license": "Open Source License:",
+    "keep_local_envs_in_vcs": "Keep local envs in version control:"
+  }
 }

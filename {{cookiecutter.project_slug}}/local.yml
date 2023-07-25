@@ -16,8 +16,10 @@ services:
       {%- if cookiecutter.use_celery %}
       - redis
       {%- endif %}
-      {%- if cookiecutter.use_mailhog %}
+      {%- if cookiecutter.email_testing == "mailhog" %}
       - mailhog
+      {%- elif cookiecutter.email_testing == "mailpit" %}
+      - mailpit
       {%- endif %}
     volumes:
       - .:/app:z
@@ -55,13 +57,21 @@ services:
     ports:
       - '9000:9000'
     command: /start-docs
-  {%- if cookiecutter.use_mailhog %}
+  {%- if cookiecutter.email_testing == "mailhog" %}
 
   mailhog:
     image: mailhog/mailhog:v1.0.0
     container_name: {{ cookiecutter.project_slug }}_local_mailhog
     ports:
       - "8025:8025"
+
+  {%- elif cookiecutter.email_testing == "mailpit"}
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+      - "1025:1025"
 
   {%- endif %}
   {%- if cookiecutter.use_celery %}
@@ -77,8 +87,10 @@ services:
     depends_on:
       - redis
       - postgres
-      {%- if cookiecutter.use_mailhog %}
+      {%- if cookiecutter.email_testing == "mailhog" %}
       - mailhog
+      {%- elif cookiecutter.email_testing == "mailpit" %}
+      - mailpit
       {%- endif %}
     ports: []
     command: /start-celeryworker
@@ -90,8 +102,10 @@ services:
     depends_on:
       - redis
       - postgres
-      {%- if cookiecutter.use_mailhog %}
+      {%- if cookiecutter.email_testing == "mailhog" %}
       - mailhog
+      {%- elif cookiecutter.email_testing == "mailpit" %}
+      - mailpit
       {%- endif %}
     ports: []
     command: /start-celerybeat

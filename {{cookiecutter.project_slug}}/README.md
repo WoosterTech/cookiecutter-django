@@ -78,21 +78,22 @@ celery -A config.celery_app worker -B -l info
 ```
 
 {%- endif %}
-{%- if cookiecutter.use_mailhog %}
+{%- if cookiecutter.email_testing != "none" %}
 
 ### Email Server
 
 {%- if cookiecutter.use_docker %}
 
-In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server [MailHog](https://github.com/mailhog/MailHog) with a web interface is available as docker container.
+In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server {%- if cookiecutter.email_testing == "mailhog" %}[MailHog](https://github.com/mailhog/MailHog){%- elif cookiecutter.email_testing == "mailpit" %}[MailPit](https://github.com/axllent/mailpit){% endif %} with a web interface is available as docker container.
 
-Container mailhog will start automatically when you will run all docker containers.
+Container {%- if cookiecutter.email_testing == "mailhog" %}mailhog{%- elif cookiecutter.email_testing == "mailpit" %}mailpit{% endif %} will start automatically when you will run all docker containers.
 Please check [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html) for more details how to start all containers.
 
-With MailHog running, to view messages that are sent by your application, open your browser and go to `http://127.0.0.1:8025`
+With {%- if cookiecutter.email_testing == "mailhog" %}MailHog{%- elif cookiecutter.email_testing == "mailpit" %}MailPit{% endif %} running, to view messages that are sent by your application, open your browser and go to `http://127.0.0.1:8025`
 {%- else %}
 
-In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use [MailHog](https://github.com/mailhog/MailHog) when generating the project a local SMTP server with a web interface will be available.
+In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use{%- if cookiecutter.email_testing == "mailhog" %}[MailHog](https://github.com/mailhog/MailHog){%- elif cookiecutter.email_testing == "mailpit" %}[MailPit](https://github.com/axllent/mailpit){% endif %} when generating the project a local SMTP server with a web interface will be available.
+{%- if cookiecutter.email_testing == "mailhog" %}
 
 1.  [Download the latest MailHog release](https://github.com/mailhog/MailHog/releases) for your OS.
 
@@ -112,6 +113,8 @@ In development, it is often nice to be able to see emails that are being sent fr
 
 Now you have your own mail server running locally, ready to receive whatever you send it.
 
+{%- elif cookiecutter.email_testing == "mailpit" %}
+__needs documentation for maipit installation__
 {%- endif %}
 
 {%- endif %}

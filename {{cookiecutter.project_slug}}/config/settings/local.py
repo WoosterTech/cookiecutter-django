@@ -25,20 +25,30 @@ CACHES = {
 
 # EMAIL
 # ------------------------------------------------------------------------------
-{% if cookiecutter.use_mailhog and cookiecutter.use_docker -%}
+{% if cookiecutter.email_testing == "none" %}
+# https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
+EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
+{% elif cookiecutter.email_test == "mailhog" %}
+{% if cookiecutter.use_docker %}
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-host
 EMAIL_HOST = env("EMAIL_HOST", default="mailhog")
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-port
 EMAIL_PORT = 1025
-{%- elif cookiecutter.use_mailhog and not cookiecutter.use_docker -%}
+{% else %}
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-host
 EMAIL_HOST = "localhost"
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-port
 EMAIL_PORT = 1025
-{%- else -%}
-# https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
-{%- endif %}
+{% elif cookiecutter.email_test == "mailpit" %}
+{% if cookiecutter.use_docker %}
+# https://docs.djangoproject.com/en/dev/ref/settings/#email-host
+EMAIL_HOST = env("EMAIL_HOST", default="mailpit")
+# https://docs.djangoproject.com/en/dev/ref/settings/#email-port
+EMAIL_PORT = 1025
+{% else %}
+# TODO: figure out non-docker config of mailpit
+{% endif %}
+{% endif %}
 
 {%- if cookiecutter.use_whitenoise %}
 
