@@ -65,7 +65,7 @@ services:
     ports:
       - "8025:8025"
 
-  {%- elif cookiecutter.email_testing == "mailpit"}
+  {%- elif cookiecutter.email_testing == "mailpit" %}
 
   mailpit:
     image: axllent/mailpit:latest

@@ -28,7 +28,7 @@ CACHES = {
 {% if cookiecutter.email_testing == "none" %}
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
-{% elif cookiecutter.email_test == "mailhog" %}
+{% elif cookiecutter.email_testing == "mailhog" %}
 {% if cookiecutter.use_docker %}
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-host
 EMAIL_HOST = env("EMAIL_HOST", default="mailhog")
@@ -39,7 +39,8 @@ EMAIL_PORT = 1025
 EMAIL_HOST = "localhost"
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-port
 EMAIL_PORT = 1025
-{% elif cookiecutter.email_test == "mailpit" %}
+{% endif %}
+{% elif cookiecutter.email_testing == "mailpit" %}
 {% if cookiecutter.use_docker %}
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-host
 EMAIL_HOST = env("EMAIL_HOST", default="mailpit")

@@ -101,7 +101,7 @@ function imgCompression() {
     .pipe(dest(paths.images));
 }
 
-{% - if cookiecutter.use_async -%}
+{%- if cookiecutter.use_async %}
 // Run django server
 function asyncRunServer() {
   const cmd = spawn(
@@ -113,7 +113,7 @@ function asyncRunServer() {
     console.log('gunicorn exited with code ' + code);
   })
 }
-{% - else %}
+{%- else %}
 // Run django server
 function runServer(cb) {
   const cmd = spawn('python', ['manage.py', 'runserver'], { stdio: 'inherit' });
@@ -122,25 +122,25 @@ function runServer(cb) {
     cb(code);
   });
 }
-{% - endif %}
+{%- endif %}
 
 // Browser sync server for live reload
 function initBrowserSync() {
   browserSync.init(
     [`${paths.css}/*.css`, `${paths.js}/*.js`, `${paths.templates}/*.html`],
     {
-      {% - if cookiecutter.use_docker %}
+      {%- if cookiecutter.use_docker %}
 // https://www.browsersync.io/docs/options/#option-open
 // Disable as it doesn't work from inside a container
 open: false,
-  {% - endif %}
+  {%- endif %}
 // https://www.browsersync.io/docs/options/#option-proxy
 proxy: {
-  {% - if not cookiecutter.use_docker %}
+  {%- if not cookiecutter.use_docker %}
   target: '127.0.0.1:8000',
-    {% - else %}
+    {%- else %}
 target: 'django:8000',
-  {% - endif %}
+  {%- endif %}
 proxyReq: [
   function (proxyReq, req) {
     // Assign proxy 'host' header same as current request at Browsersync server
@@ -166,15 +166,15 @@ watch([`${paths.js}/*.js`, `!${paths.js}/*.min.js`]{% if cookiecutter.windows %}
 const generateAssets = parallel(styles, scripts, vendorScripts, imgCompression);
 
 // Set up dev environment
-{% - if not cookiecutter.use_docker %}
-{% - if cookiecutter.use_async %}
+{%- if not cookiecutter.use_docker %}
+{%- if cookiecutter.use_async %}
 const dev = parallel(asyncRunServer, initBrowserSync, watchPaths);
-{% - else %}
+{%- else %}
 const dev = parallel(runServer, initBrowserSync, watchPaths);
-{% - endif %}
-{% - else %}
+{%- endif %}
+{%- else %}
 const dev = parallel(initBrowserSync, watchPaths);
-{% - endif %}
+{%- endif %}
 
 exports.default = series(generateAssets, dev);
 exports['generate-assets'] = generateAssets;

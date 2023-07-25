@@ -22,7 +22,7 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 
 - To create a **superuser account**, use this command:
 
-      $ python manage.py createsuperuser
+      python manage.py createsuperuser
 
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
@@ -30,19 +30,19 @@ For convenience, you can keep your normal user logged in on Chrome and your supe
 
 Running type checks with mypy:
 
-    $ mypy {{cookiecutter.project_slug}}
+    mypy {{cookiecutter.project_slug}}
 
 ### Test coverage
 
 To run the tests, check your test coverage, and generate an HTML coverage report:
 
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
+    coverage run -m pytest
+    coverage html
+    open htmlcov/index.html
 
 #### Running tests with pytest
 
-    $ pytest
+    pytest
 
 ### Live reloading and Sass CSS compilation
 
@@ -83,40 +83,48 @@ celery -A config.celery_app worker -B -l info
 ### Email Server
 
 {%- if cookiecutter.use_docker %}
+{%- if cookiecutter.email_testing == "mailhog" %}
+{%- set provider = "MailHog" %}
+{%- set provider_repo = "https://github.com/mailhog/MailHog" %}
+{%- elif cookiecutter.email_testing == "mailpit" %}
+{%- set provider = "MailPit" %}
+{%- set provider_repo = "https://github.com/axllent/mailpit" %}
+{%- endif %}
 
-In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server {%- if cookiecutter.email_testing == "mailhog" %}[MailHog](https://github.com/mailhog/MailHog){%- elif cookiecutter.email_testing == "mailpit" %}[MailPit](https://github.com/axllent/mailpit){% endif %} with a web interface is available as docker container.
+In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server [{{ provider }}]({{ provider_repo }}) with a web interface is available as a docker container.
 
-Container {%- if cookiecutter.email_testing == "mailhog" %}mailhog{%- elif cookiecutter.email_testing == "mailpit" %}mailpit{% endif %} will start automatically when you will run all docker containers.
+Container {{ cookiecutter.email_testing }} will start automatically when you run all docker containers.
 Please check [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html) for more details how to start all containers.
 
-With {%- if cookiecutter.email_testing == "mailhog" %}MailHog{%- elif cookiecutter.email_testing == "mailpit" %}MailPit{% endif %} running, to view messages that are sent by your application, open your browser and go to `http://127.0.0.1:8025`
+With {{ provider }} running, to view messages that are sent by your application, open your browser and go to `http://127.0.0.1:8025`
 {%- else %}
 
-In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use{%- if cookiecutter.email_testing == "mailhog" %}[MailHog](https://github.com/mailhog/MailHog){%- elif cookiecutter.email_testing == "mailpit" %}[MailPit](https://github.com/axllent/mailpit){% endif %} when generating the project a local SMTP server with a web interface will be available.
+In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use[{{ provider }}]({{ provider_repo }}) when generating the project a local SMTP server with a web interface will be available.
 {%- if cookiecutter.email_testing == "mailhog" %}
 
-1.  [Download the latest MailHog release](https://github.com/mailhog/MailHog/releases) for your OS.
+1. [Download the latest MailHog release](https://github.com/mailhog/MailHog/releases) for your OS.
 
-2.  Rename the build to `MailHog`.
+1. Rename the build to `MailHog`.
 
-3.  Copy the file to the project root.
+1. Copy the file to the project root.
 
-4.  Make it executable:
+1. Make it executable:
 
-        $ chmod +x MailHog
+        chmod +x MailHog
 
-5.  Spin up another terminal window and start it there:
+1. Spin up another terminal window and start it there:
 
         ./MailHog
 
-6.  Check out <http://127.0.0.1:8025/> to see how it goes.
+1. Check out <http://127.0.0.1:8025/> to see how it goes.
 
 Now you have your own mail server running locally, ready to receive whatever you send it.
 
 {%- elif cookiecutter.email_testing == "mailpit" %}
-__needs documentation for maipit installation__
+**needs documentation for mailpit installation**
 {%- endif %}
 
+{%- endif %}
 {%- endif %}
 {%- if cookiecutter.use_sentry %}
 
@@ -131,14 +139,14 @@ You must set the DSN url in production.
 ## Deployment
 
 The following details how to deploy this application.
-{%- if cookiecutter.use_heroku.lower() %}
+{%- if cookiecutter.use_heroku %}
 
 ### Heroku
 
 See detailed [cookiecutter-django Heroku documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html).
 
 {%- endif %}
-{%- if cookiecutter.use_docker.lower() %}
+{%- if cookiecutter.use_docker %}
 
 ### Docker
 
