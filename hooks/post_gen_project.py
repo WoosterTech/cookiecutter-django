@@ -411,7 +411,7 @@ def remove_storages_module():
 
 
 def main():
-    debug = "{{ cookiecutter.debug }}".lower() == "y"
+    debug = "{{ cookiecutter.debug }}"
 
     set_flags_in_envs(
         DEBUG_VALUE if debug else generate_random_user(),
@@ -431,19 +431,19 @@ def main():
     if "{{ cookiecutter.editor }}" != "PyCharm":
         remove_pycharm_files()
 
-    if "{{ cookiecutter.use_docker }}".lower() == "y":
+    if "{{ cookiecutter.use_docker }}":
         remove_utility_files()
     else:
         remove_docker_files()
 
-    if "{{ cookiecutter.use_docker }}".lower() == "y" and "{{ cookiecutter.cloud_provider}}" != "AWS":
+    if "{{ cookiecutter.use_docker }}" and "{{ cookiecutter.cloud_provider}}" != "AWS":
         remove_aws_dockerfile()
 
-    if "{{ cookiecutter.use_heroku }}".lower() == "n":
+    if not "{{ cookiecutter.use_heroku }}":
         remove_heroku_files()
 
-    if "{{ cookiecutter.use_docker }}".lower() == "n" and "{{ cookiecutter.use_heroku }}".lower() == "n":
-        if "{{ cookiecutter.keep_local_envs_in_vcs }}".lower() == "y":
+    if not "{{ cookiecutter.use_docker }}" and not "{{ cookiecutter.use_heroku }}":
+        if "{{ cookiecutter.keep_local_envs_in_vcs }}":
             print(
                 INFO + ".env(s) are only utilized when Docker Compose and/or "
                 "Heroku support is enabled so keeping them does not make sense "
@@ -453,7 +453,7 @@ def main():
     else:
         append_to_gitignore_file(".env")
         append_to_gitignore_file(".envs/*")
-        if "{{ cookiecutter.keep_local_envs_in_vcs }}".lower() == "y":
+        if "{{ cookiecutter.keep_local_envs_in_vcs }}":
             append_to_gitignore_file("!.envs/.local/")
 
     if "{{ cookiecutter.frontend_pipeline }}" in ["None", "Django Compressor"]:
@@ -461,25 +461,25 @@ def main():
         remove_webpack_files()
         remove_sass_files()
         remove_packagejson_file()
-        if "{{ cookiecutter.use_docker }}".lower() == "y":
+        if "{{ cookiecutter.use_docker }}":
             remove_node_dockerfile()
     else:
         handle_js_runner(
             "{{ cookiecutter.frontend_pipeline }}",
-            use_docker=("{{ cookiecutter.use_docker }}".lower() == "y"),
-            use_async=("{{ cookiecutter.use_async }}".lower() == "y"),
+            use_docker="{{ cookiecutter.use_docker }}",
+            use_async="{{ cookiecutter.use_async }}",
         )
 
-    if "{{ cookiecutter.cloud_provider }}" == "None" and "{{ cookiecutter.use_docker }}".lower() == "n":
+    if "{{ cookiecutter.cloud_provider }}" == "None" and not "{{ cookiecutter.use_docker }}":
         print(
             WARNING + "You chose to not use any cloud providers nor Docker, "
             "media files won't be served in production." + TERMINATOR
         )
         remove_storages_module()
 
-    if "{{ cookiecutter.use_celery }}".lower() == "n":
+    if not "{{ cookiecutter.use_celery }}":
         remove_celery_files()
-        if "{{ cookiecutter.use_docker }}".lower() == "y":
+        if "{{ cookiecutter.use_docker }}":
             remove_celery_compose_dirs()
 
     if "{{ cookiecutter.ci_tool }}" != "Travis":
@@ -491,10 +491,10 @@ def main():
     if "{{ cookiecutter.ci_tool }}" != "Github":
         remove_dotgithub_folder()
 
-    if "{{ cookiecutter.use_drf }}".lower() == "n":
+    if not "{{ cookiecutter.use_drf }}":
         remove_drf_starter_files()
 
-    if "{{ cookiecutter.use_async }}".lower() == "n":
+    if not "{{ cookiecutter.use_async }}":
         remove_async_files()
 
     print(SUCCESS + "Project initialized, keep up the good work!" + TERMINATOR)
