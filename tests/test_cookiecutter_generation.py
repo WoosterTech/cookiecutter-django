@@ -128,6 +128,7 @@ SUPPORTED_COMBINATIONS = [
     {"ci_tool": "Travis"},
     {"ci_tool": "Gitlab"},
     {"ci_tool": "Github"},
+    {"ci_tool": "Drone"},
     {"keep_local_envs_in_vcs": True},
     {"keep_local_envs_in_vcs": False},
     {"debug": True},
@@ -274,7 +275,7 @@ def test_djlint_check_passes(cookies, context_override):
     ["use_docker", "expected_test_script"],
     [
         (False, "pytest"),
-        (True, "docker-compose -f local.yml run django pytest"),
+        (True, "docker compose -f local.yml run django pytest"),
     ],
 )
 def test_travis_invokes_pytest(cookies, context, use_docker, expected_test_script):
@@ -299,7 +300,7 @@ def test_travis_invokes_pytest(cookies, context, use_docker, expected_test_scrip
     ["use_docker", "expected_test_script"],
     [
         (False, "pytest"),
-        (True, "docker-compose -f local.yml run django pytest"),
+        (True, "docker compose -f local.yml run django pytest"),
     ],
 )
 def test_gitlab_invokes_precommit_and_pytest(cookies, context, use_docker, expected_test_script):
@@ -326,7 +327,7 @@ def test_gitlab_invokes_precommit_and_pytest(cookies, context, use_docker, expec
     ["use_docker", "expected_test_script"],
     [
         (False, "pytest"),
-        (True, "docker-compose -f local.yml run django pytest"),
+        (True, "docker compose -f local.yml run django pytest"),
     ],
 )
 def test_github_invokes_linter_and_pytest(cookies, context, use_docker, expected_test_script):
