@@ -40,7 +40,7 @@
   "use_whitenoise": false,
   "use_heroku": false,
   "linter": ["flake8", "ruff"],
-  "ci_tool": ["None", "Travis", "Gitlab", "Github"],
+  "ci_tool": ["None", "Travis", "Gitlab", "Github", "Drone"],
   "keep_local_envs_in_vcs": true,
   "debug": false,
   "__prompts__": {
