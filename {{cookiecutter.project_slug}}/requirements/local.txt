@@ -29,7 +29,7 @@ sphinx-autobuild==2021.3.14 # https://github.com/GaretJax/sphinx-autobuild
 # Code quality
 # ------------------------------------------------------------------------------
 {%- if cookiecutter.linter == "flake8" %}
-flake8==6.0.0  # https://github.com/PyCQA/flake8
+flake8==6.1.0  # https://github.com/PyCQA/flake8
 flake8-isort==6.0.0  # https://github.com/gforcada/flake8-isort
 {%- elif cookiecutter.linter == "ruff" %}
 ruff==0.0.278  # https://github.com/astral-sh/ruff
