@@ -20,7 +20,6 @@ repos:
     rev: v1.0.0
     hooks:
       - id: check-json5
-{%- if cookiecutter.frontend_pipeline in ["Webpack", "Gulp"] %}
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.0.1
