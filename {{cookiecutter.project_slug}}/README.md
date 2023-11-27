@@ -102,21 +102,21 @@ With {{ provider }} running, to view messages that are sent by your application,
 In development, it is often nice to be able to see emails that are being sent from your application. If you choose to use[{{ provider }}]({{ provider_repo }}) when generating the project a local SMTP server with a web interface will be available.
 {%- if cookiecutter.email_testing == "mailhog" %}
 
-1. [Download the latest MailHog release](https://github.com/mailhog/MailHog/releases) for your OS.
+1.  [Download the latest MailHog release](https://github.com/mailhog/MailHog/releases) for your OS.
 
-1. Rename the build to `MailHog`.
+1.  Rename the build to `MailHog`.
 
-1. Copy the file to the project root.
+1.  Copy the file to the project root.
 
-1. Make it executable:
+1.  Make it executable:
 
         chmod +x MailHog
 
-1. Spin up another terminal window and start it there:
+1.  Spin up another terminal window and start it there:
 
         ./MailHog
 
-1. Check out <http://127.0.0.1:8025/> to see how it goes.
+1.  Check out <http://127.0.0.1:8025/> to see how it goes.
 
 Now you have your own mail server running locally, ready to receive whatever you send it.
 
