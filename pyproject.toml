@@ -48,3 +48,9 @@ indent_size = 2
 
 [tool.djlint.js]
 indent_size = 2
+
+[tool.mypy]
+mypy_path = "$MYPY_CONFIG_FILE_DIR/out"
+
+[tool.commitizen]
+name = "cz_conventional_commits"

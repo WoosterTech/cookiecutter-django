@@ -2,11 +2,17 @@ import datetime as dt
 import os
 import re
 from collections.abc import Iterable
+from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from github.PullRequest import PullRequest
+    from github.Repository import Repository
 
 import git
-import github.PullRequest
-import github.Repository
 from github import Github
 from jinja2 import Template
 
@@ -23,6 +29,8 @@ def main() -> None:
     """
     # Generate changelog for PRs merged yesterday
     merged_date = dt.date.today() - dt.timedelta(days=1)
+    if GITHUB_REPO is None:
+        raise RuntimeError("No github repo, please set the environment variable GITHUB_REPOSITORY")
     repo = Github(login_or_token=GITHUB_TOKEN).get_repo(GITHUB_REPO)
     merged_pulls = list(iter_pulls(repo, merged_date))
     print(f"Merged pull requests: {merged_pulls}")
@@ -32,7 +40,7 @@ def main() -> None:
 
     # Group pull requests by type of change
     grouped_pulls = group_pulls_by_change_type(merged_pulls)
-    if not any(grouped_pulls.values()):
+    if not grouped_pulls.has_values:
         print("Pull requests merged aren't worth a changelog mention.")
         return
 
@@ -64,9 +72,9 @@ def main() -> None:
 
 
 def iter_pulls(
-    repo: github.Repository.Repository,
+    repo: Repository,
     merged_date: dt.date,
-) -> Iterable[github.PullRequest.PullRequest]:
+) -> Iterable[PullRequest]:
     """Fetch merged pull requests at the date we're interested in."""
     recent_pulls = repo.get_pulls(
         state="closed",
@@ -74,42 +82,72 @@ def iter_pulls(
         direction="desc",
     ).get_page(0)
     for pull in recent_pulls:
+        if not isinstance(pull.merged_at, datetime):
+            continue
         if pull.merged and pull.merged_at.date() == merged_date:
             yield pull
 
 
-def group_pulls_by_change_type(
-    pull_requests_list: list[github.PullRequest.PullRequest],
-) -> dict[str, list[github.PullRequest.PullRequest]]:
-    """Group pull request by change type."""
-    grouped_pulls = {
-        "Changed": [],
-        "Fixed": [],
-        "Documentation": [],
-        "Updated": [],
-    }
-    for pull in pull_requests_list:
+@dataclass
+class GroupedPulls:
+    changed:list[PullRequest] = []
+    fixed:list[PullRequest] = []
+    documentation:list[PullRequest] = []
+    updated:list[PullRequest] = []
+
+    def add_pull(self, pull:PullRequest) -> None:
+        """Check for pull type and create lists of different types.
+        
+        Labels:
+        - project infrastructure: not worthy of changelog mention (nothing added)
+        - update: added to `updated`
+        - bug: added to `fixed`
+        - docs: added to `documentation`
+        - <no match>: added to `changed`
+        """
         label_names = {label.name for label in pull.labels}
         if "project infrastructure" in label_names:
             # Don't mention it in the changelog
-            continue
+            return
         if "update" in label_names:
-            group_name = "Updated"
+            self.updated.append(pull)
         elif "bug" in label_names:
-            group_name = "Fixed"
+            self.fixed.append(pull)
         elif "docs" in label_names:
-            group_name = "Documentation"
+            self.fixed.append(pull)
         else:
-            group_name = "Changed"
-        grouped_pulls[group_name].append(pull)
+            self.changed.append(pull)
+        
+        return
+    
+    @property
+    def has_values(self) -> bool:
+        """Whether there are any pulls in object."""
+        named_attributes = [self.changed, self.fixed, self.documentation, self.updated]
+        for attribute in named_attributes:
+            if len(attribute) > 0:
+                return True
+        return False
+
+    
+    def to_dict(self) -> dict[str, list[PullRequest]]:
+        return {"Changed": self.changed, "Fixed": self.fixed, "Documentation": self.documentation, "Updated": self.updated}
+
+def group_pulls_by_change_type(
+    pull_requests_list: list[PullRequest],
+) -> GroupedPulls:
+    """Group pull request by change type."""
+    grouped_pulls = GroupedPulls()
+    for pull in pull_requests_list:
+        grouped_pulls.add_pull(pull)
     return grouped_pulls
 
 
-def generate_md(grouped_pulls: dict[str, list[github.PullRequest.PullRequest]]) -> str:
+def generate_md(grouped_pulls: GroupedPulls) -> str:
     """Generate markdown file from Jinja template."""
     changelog_template = ROOT / ".github" / "changelog-template.md"
     template = Template(changelog_template.read_text(), autoescape=True)
-    return template.render(grouped_pulls=grouped_pulls)
+    return template.render(grouped_pulls=grouped_pulls.to_dict())
 
 
 def write_changelog(file_path: Path, release: str, content: str) -> None:
@@ -136,6 +174,8 @@ def update_version(file_path: Path, release: str) -> None:
 
 def update_git_repo(paths: list[Path], release: str) -> None:
     """Commit, tag changes in git repo and push to origin."""
+    if GIT_BRANCH is None:
+        raise RuntimeError("No git branch set, please set the GITHUB_REF_NAME environment variable")
     repo = git.Repo(ROOT)
     for path in paths:
         repo.git.add(path)
@@ -156,8 +196,4 @@ def update_git_repo(paths: list[Path], release: str) -> None:
 
 
 if __name__ == "__main__":
-    if GITHUB_REPO is None:
-        raise RuntimeError("No github repo, please set the environment variable GITHUB_REPOSITORY")
-    if GIT_BRANCH is None:
-        raise RuntimeError("No git branch set, please set the GITHUB_REF_NAME environment variable")
     main()

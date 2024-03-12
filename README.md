@@ -19,8 +19,8 @@ production-ready Django projects quickly.
 
 ## Features
 
-- For Django 4.2
-- Works with Python 3.11
+- For Django 5.0
+- Works with Python 3.12
 - Renders Django projects with 100% starting test coverage
 - Twitter [Bootstrap](https://github.com/twbs/bootstrap) v5
 - [12-Factor](https://12factor.net) based settings via [django-environ](https://github.com/joke2k/django-environ)
@@ -28,7 +28,7 @@ production-ready Django projects quickly.
 - Optimized development and production settings
 - Registration via [django-allauth](https://github.com/pennersr/django-allauth)
 - Comes with custom user model ready to go
-- Optional basic ASGI setup for Websockets
+- Optional basic ASGI setup for WebSockets
 - Optional custom static build using Gulp or Webpack
 - Send emails via [Anymail](https://github.com/anymail/django-anymail) (using [Mailgun](http://www.mailgun.com/) by default or Amazon SES if AWS is selected cloud provider, but switchable)
 - Media storage using Amazon S3, Google Cloud Storage, Azure Storage or nginx
@@ -88,7 +88,7 @@ and then editing the results to include your name, email, and various configurat
 
 First, get Cookiecutter. Trust me, it's awesome:
 
-    $ pip install "cookiecutter>=1.7.0"
+    $ pip install "cookiecutter"
 
 Now run it against this repo:
 
@@ -96,7 +96,7 @@ Now run it against this repo:
 
 You'll be prompted for some values. Provide them, then a Django project will be created for you.
 
-**Warning**: After this point, change 'Daniel Greenfeld', 'pydanny', etc to your own information.
+**Warning**: After this point, change 'Daniel Greenfeld', 'pydanny', etc. to your own information.
 
 Answer the prompts with your own desired [options](http://cookiecutter-django.readthedocs.io/en/latest/project-generation-options.html). For example:
 
@@ -173,7 +173,7 @@ Answer the prompts with your own desired [options](http://cookiecutter-django.re
     1 - None
     2 - Travis
     3 - Gitlab
-    4 - Github
+    4 - GitHub
     Choose from 1, 2, 3, 4 [1]: 4
     keep_local_envs_in_vcs [y]: y
     debug [n]: n
@@ -196,6 +196,11 @@ Now take a look at your repo. Don't forget to carefully look at the generated RE
 For local development, see the following:
 
 - [Developing locally](http://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html)
+  - Instead of `pip`, this uses [astral's](https://astral.sh/) [uv](https://github.com/astral-sh/uv) project
+    - Install `uv`: `pip install uv`
+    - Compile `requirements.in`: `uv pip compile requirements.in -o requirements.txt`
+      - This file is *not* platform-agnostic, so must be compiled for *your* platform
+    - Use the generated `requirements.txt` file normally with instructions for developing locally above
 - [Developing locally using docker](http://cookiecutter-django.readthedocs.io/en/latest/developing-locally-docker.html)
 
 ## Community
@@ -220,7 +225,7 @@ Scattered throughout the Python and HTML of this project are places marked with 
 
 ## For MySQL users
 
-To get full MySQL support in addition to the default Postgresql, you can use this fork of the cookiecutter-django:
+To get full MySQL support in addition to the default PostgreSQL, you can use this fork of the cookiecutter-django:
 https://github.com/mabdullahadeel/cookiecutter-django-mysql
 
 ## Releases

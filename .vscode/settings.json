@@ -1,3 +1,11 @@
 {
-  "esbonio.sphinx.confDir": ""
+  "esbonio.sphinx.confDir": "",
+  "files.associations": {
+    "*.js": "jinja-javascript",
+    "javascript": "jinja-javascript",
+    "*.yml": "jinja-yaml",
+    "Dockerfile": "jinja-dockerfile",
+    "*.sh": "jinja-shell",
+    "shellscript": "jinja-shell",
+  },
 }

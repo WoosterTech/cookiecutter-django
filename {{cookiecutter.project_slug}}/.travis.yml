@@ -5,7 +5,11 @@ python:
   - "3.11"
 
 services:
-  - {% if cookiecutter.use_docker %}docker{% else %}postgresql{% endif %}
+  {% if cookiecutter.use_docker %}
+  - docker
+  {% else %}
+  - postgresql
+  {% endif %}
 jobs:
   include:
     - name: "Linter"

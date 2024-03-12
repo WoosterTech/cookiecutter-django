@@ -31,7 +31,7 @@ CACHES = {
 
 # EMAIL
 # ------------------------------------------------------------------------------
-{% if cookiecutter.email_testing == "none" %}
+{% if cookiecutter.email_testing == "None" %}
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
 {% elif cookiecutter.email_testing == "mailhog" %}
